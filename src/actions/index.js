@@ -27,9 +27,15 @@ export const setMnemonic = mnemonic => ({
 })
 
 let nextAddress = 0
-export const addAddress = (text, path) => ({
+export const addAddress = (address, path) => ({
   type: 'ADD_ADDRESS',
   id: nextAddress++,
-  text,
+  address,
   path
+})
+
+export const setBalance = (address, balance) => ({
+  type: 'SET_BALANCE',
+  address,
+  balance
 })

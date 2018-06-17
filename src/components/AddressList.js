@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import Address from './Address'
 import { connect } from 'react-redux'
-import {addAddress} from '../actions'
+import {addAddress,setBalance} from '../actions'
 
 let bitcoin = require('bitcoinjs-lib')
 let bip39 = require('bip39')
 let bip32 = require('bip32')
 const cointypes = require('bip44-constants')
+let dhttp = require('dhttp/200')
 let index = 0
 
 const getAddress = (node) => {
@@ -19,7 +20,27 @@ const getAddress = (node) => {
     )
 }
 
-const AddressList = ({ addresses, mnemonic, addnewaddress }) => (
+const getTransactions = (address, setbalance) => {
+	console.log('get TX: ',address.address)
+	setTimeout(() => {
+
+    dhttp({
+      method: 'GET',
+      url: 'https://test-insight.bitpay.com/api/addr/'+address.address,
+      // url: 'https://insight.bitpay.com/api/addr/'+address.address,
+      /*body: {
+        addrs: [address],
+        height: 0
+      }*/
+    }, function (err, transactions) {
+      if (err) console.log(err)
+      	console.log(transactions)
+      	// setbalance(address,transactions.balance)
+    }),10000
+	})
+  }
+
+const AddressList = ({ addresses, mnemonic, addnewaddress, setbalance }) => (
   <div>
 	  <table className="table">
 		  <thead>
@@ -34,7 +55,9 @@ const AddressList = ({ addresses, mnemonic, addnewaddress }) => (
 		      <Address
 		        key={address.id}
 		        {...address}
-		        onClick={() => getBalance(address.id)}
+		        onClick={() => {
+		        	getTransactions(address, setbalance)
+		        }}
 		      />
 		    )}
 	    </tbody>
@@ -57,7 +80,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  addnewaddress: (address, path) => dispatch(addAddress(address, path))
+  addnewaddress: (address, path) => dispatch(addAddress(address, path)),
+  setbalance: (address, balance) => dispatch(setBalance(address, balance))
 })
 
 export default connect(
