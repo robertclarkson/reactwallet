@@ -22,9 +22,7 @@ const getAddress = (node) => {
 
 const getTransactions = (address, setbalance) => {
 	console.log('get TX: ',address.address)
-	setTimeout(() => {
-
-    dhttp({
+	dhttp({
       method: 'GET',
       url: 'https://test-insight.bitpay.com/api/addr/'+address.address,
       // url: 'https://insight.bitpay.com/api/addr/'+address.address,
@@ -36,11 +34,10 @@ const getTransactions = (address, setbalance) => {
       if (err) console.log(err)
       	console.log(transactions)
       	setbalance(address.address,transactions.balance)
-    }),10000
-	})
+    })
   }
 
-const AddressList = ({ addresses, mnemonic, addnewaddress, setbalance }) => (
+const AddressList = ({ addresses, mnemonicText, addnewaddress, setbalance }) => (
   <div>
 	  <table className="table">
 		  <thead>
@@ -52,22 +49,26 @@ const AddressList = ({ addresses, mnemonic, addnewaddress, setbalance }) => (
 		  </thead>
 	  	<tbody>
 		    {addresses.map(address => (
-		    console.log('new',address),	
-		      <Address
-		        key={address.id}
-		        {...address}
-		        onClick={() => {
-		        	getTransactions(address, setbalance)
-		        }}
-		      />
-		      
-		    	)
+		    	// console.log('new',address),	
+				<Address
+					key={address.id}
+					{...address}
+					onClick={() => {
+					getTransactions(address, setbalance)
+					}}
+				/>
+				)
 		    )}
 	    </tbody>
 	  </table>
 	  <button onClick={
 	  	() => {
-		  	let seed = bip39.mnemonicToSeed(mnemonic)
+	  		if(!bip39.validateMnemonic(mnemonicText)) {
+	  			console.error('Not a valid mnemonic: ', mnemonicText)
+	  			return
+	  		}
+	  		// console.log(mnemonicText)
+		  	let seed = bip39.mnemonicToSeed(mnemonicText)
 	        let rootkey = bip32.fromSeed(seed)
 	        let path = "m/44'/"+(index++)+"'/0'/0/0"
 	        let address = getAddress(rootkey.derivePath(path))
@@ -79,7 +80,7 @@ const AddressList = ({ addresses, mnemonic, addnewaddress, setbalance }) => (
 
 const mapStateToProps = state => ({
   addresses: state.addresses,
-  mnemonic: state.mnemonic.mnemonic
+  mnemonicText: state.mnemonic.words
 })
 
 const mapDispatchToProps = dispatch => ({

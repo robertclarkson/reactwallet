@@ -1,4 +1,6 @@
 import React, {Component}from 'react'
+import { connect } from 'react-redux'
+import {setMnemonic} from '../actions'
 import {
   isSignInPending,
   loadUserData,
@@ -13,16 +15,18 @@ var bip39 = require('bip39')
 var bip32 = require('bip32')
 const cointypes = require('bip44-constants')
 
-export default class Settings extends Component {
+class Settings extends Component {
 	constructor(props) {
 		super(props);
-
+		console.log(props)
 		this.state = {
-			mnemonic: "",
 			newMnemonic: "",
 			isLoading: false
 		};
+		this.fetchData()
+		
 	}
+
 	handleMnemonicChange(event) {
 		this.setState({
 			newMnemonic: event.target.value
@@ -50,14 +54,18 @@ export default class Settings extends Component {
 	saveMnemonicToGaia(mnemonic) {
 		putFile('mnemonic.json', JSON.stringify(mnemonic))
 		  .then(() => {
-		    this.setState({
-		      mnemonic: mnemonic
-		    })
+		    this.props.updateMnemonic(mnemonic)
+		    // this.setState({
+		    //   mnemonic: mnemonic
+		    // })
 		})
 	}
 
 	saveNewMnemonic(mnemonicText) {
-
+		if(!bip39.validateMnemonic(mnemonicText)) {
+			alert('bad mnemonic, nothing changed.')
+			return
+		}
 		let mnemonic = {
 		  words: mnemonicText,
 		  created_at: Date.now()
@@ -67,24 +75,26 @@ export default class Settings extends Component {
 	}
 
 	fetchData(){
-		this.setState({isLoading:true})
+		// this.setState({isLoading:true})
 		getFile('mnemonic.json')
 		.then((file) => {
 			if(file != null) {
 				var mnemonic = JSON.parse(file || '[]')
-				console.log(mnemonic);
 				if(mnemonic.words){
 					var words = mnemonic.words
+
 					var seed = bip39.mnemonicToSeed(words)
 					var rootkey = bip32.fromSeed(seed)
 					// var address = this.getAddress(rootkey.derivePath("m/44'/1'/0'/0/0"))
 					// var txs = this.getTransactions(address, this)
 					// var trans = this.getTxs(address, this)
+		    		
+		    		this.props.updateMnemonic(mnemonic)
 
-					this.setState({
-						mnemonic:mnemonic,
-						created_at:new Date(mnemonic.created_at).toString()
-					})
+					// this.setState({
+					// 	mnemonic:mnemonic
+					// 	created_at:new Date(mnemonic.created_at).toString()
+					// })
 				}
 				else {
 					console.log('no mnemonic')
@@ -99,26 +109,12 @@ export default class Settings extends Component {
 			console.log(e);
 		})
 		.finally(() => {
-			this.setState({isLoading:false})
+			// this.setState({isLoading:false})
 		})
 	}
 
-	storeMnemonic() {
-		putFile('mnemonic.json', JSON.stringify(btc))
-	      .then(() => {
-	        // this.setState({
-	        //   mnemonic:mnemonic,
-	        //   address:address,
-	        //   created_at:new Date(btc.created_at).toString()
-	        // })
-	      })
-	}
-
-	componentDidMount() {
-		this.fetchData()
-	}
-
 	render() {
+		const {mnemonic} = this.props
 		return (
 			<div>
 				<h1>Settings</h1>
@@ -130,13 +126,13 @@ export default class Settings extends Component {
 				                <tr>
 				                	<th>Created</th>
 				                	<td>
-				                		{!this.state.isLoading?new Date(this.state.mnemonic.created_at).toString():'Loading...'}
+				                		{mnemonic?new Date(mnemonic.created_at).toString():'loading..'}
 				                	</td>
 				                </tr>
 				                <tr>
 				                	<th>Mnemonic</th>
 				                	<td>
-				                		{!this.state.isLoading?this.state.mnemonic.words:'Loading...'}
+				                		{mnemonic?mnemonic.words:"loading..."}
 					                </td>
 				                </tr>
 				            </tbody>
@@ -187,9 +183,19 @@ export default class Settings extends Component {
 				</div>	
 			</div>	
 		);
-		
 	}
-
-	
-	
 }
+
+const mapStateToProps = state => ({
+	mnemonic: state.mnemonic
+})
+
+const mapDispatchToProps = dispatch => ({
+  updateMnemonic: (mnemonic) => dispatch(setMnemonic(mnemonic))
+})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Settings)
+

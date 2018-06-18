@@ -39,40 +39,40 @@ export default class App extends Component {
 
   render() {
     return (
-        <div>
-          { !isUserSignedIn() ?
-            <Signin handleSignIn={ this.handleSignIn } />
-            : <BrowserRouter>
-                <div>
-                  <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
-                    <Link className="navbar-brand" to="/">Simple Wallet</Link>
-                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                      <span className="navbar-toggler-icon"></span>
-                    </button>
+      <div>
+        { !isUserSignedIn() ?
+          <Signin handleSignIn={ this.handleSignIn } />
+          : <BrowserRouter>
+              <div>
+                <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+                  <Link className="navbar-brand" to="/">Simple Wallet</Link>
+                  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                  </button>
 
-                    <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                      <ul className="navbar-nav mr-auto">
-                        <li className="nav-item">
-                          <NavLink className="nav-link" to="/" activeClassName="active">Home</NavLink>
-                        </li>
-                        <li className="nav-item">
-                          <NavLink className="nav-link" to="/bitcoin" activeClassName="active">Bitcoin</NavLink>
-                        </li>
-                        <li className="nav-item">
-                          <NavLink className="nav-link" to="/settings" activeClassName="active">Settings</NavLink>
-                        </li>
-                      </ul>
-                    </div>
-                  </nav>
-                  <switch>
-                    <Route path="/bitcoin" component={BitcoinWallet}/>
-                    <Route path="/settings" component={Settings}/>
-                    <Route exact path="/" component={Home}/>
-                  </switch>
-                </div>
-              </BrowserRouter>
-          }
-        </div>
+                  <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul className="navbar-nav mr-auto">
+                      <li className="nav-item">
+                        <NavLink className="nav-link" to="/" activeClassName="active">Home</NavLink>
+                      </li>
+                      <li className="nav-item">
+                        <NavLink className="nav-link" to="/bitcoin" activeClassName="active">Bitcoin</NavLink>
+                      </li>
+                      <li className="nav-item">
+                        <NavLink className="nav-link" to="/settings" activeClassName="active">Settings</NavLink>
+                      </li>
+                    </ul>
+                  </div>
+                </nav>
+                <switch>
+                  <Route path="/bitcoin" component={BitcoinWallet}/>
+                  <Route path="/settings" component={Settings}/>
+                  <Route exact path="/" component={Home}/>
+                </switch>
+              </div>
+            </BrowserRouter>
+        }
+      </div>
     );
   }
 

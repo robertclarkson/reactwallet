@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import AddressList from '../components/AddressList'
+import SendForm from '../components/SendForm'
 import addAddress from '../actions/index'
 import { connect } from 'react-redux'
 
@@ -30,7 +31,6 @@ export default class BitcoinWallet extends Component {
 
 	generateNewAddress(event) {
 		console.log('new address');
-		
 	}
 
 	render() {
@@ -38,6 +38,7 @@ export default class BitcoinWallet extends Component {
 		  <div>
 			<h1>Bitcoin</h1>
 			<AddressList  />
+			<SendForm />
 		  </div>
 		);
 	}

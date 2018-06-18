@@ -1,4 +1,5 @@
 const mnemonic = (state = '', action) => {
+	console.log('mnemonic',state, action)
   switch (action.type) {
     case 'SET_MNEMONIC':
       return action.mnemonic

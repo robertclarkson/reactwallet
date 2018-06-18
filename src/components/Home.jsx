@@ -19,17 +19,15 @@ export default class Home extends Component {
 	
 	render(){
 		return (
-			<div className="site-wrapper">
-		        <div className="site-wrapper-inner">
-					<div>
-						<Profile handleSignOut={ this.handleSignOut } />
-						<AddTodo />
-						<VisibleTodoList />
-						<Footer />
+			<div className="container">
+				<div className="col-sm-6 offset-sm-3 text-center">
+			        <div className="site-wrapper-inner">
+						<div>
+							<Profile handleSignOut={ this.handleSignOut } />
+						</div>
 					</div>
 				</div>
 			</div>
-
 		)
 	}		
 	

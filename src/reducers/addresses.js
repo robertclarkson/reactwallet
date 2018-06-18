@@ -1,5 +1,5 @@
 const addresses = (state = [], action) => {
-  console.log(action)
+  // console.log(action)
   switch (action.type) {
     case 'ADD_ADDRESS':
       return [
