@@ -5,7 +5,10 @@ const Address = ({ onClick, address, path, balance }) => (
   <tr>
 	  <td>{address}</td>
 	  <td>{path}</td>
-	  <td><button onClick={onClick(address)}>bal</button>{balance}</td>
+	  <td><button onClick={onClick}>bal</button>
+	  <span>
+	  {balance}
+	  </span></td>
   </tr>
 )
 

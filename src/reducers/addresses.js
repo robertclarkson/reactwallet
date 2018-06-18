@@ -11,10 +11,10 @@ const addresses = (state = [], action) => {
         }
       ]
     case 'SET_BALANCE':
-      return state.map(address =>
-        address.address === action.address ?
-          { ...address, balance: action.balance } :
-          address
+      return state.map(item =>
+        item.address === action.address ?
+          { ...item, balance: action.balance } :
+          item
       )
     default:
       return state

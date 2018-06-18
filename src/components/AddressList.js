@@ -35,7 +35,7 @@ const getTransactions = (address, setbalance) => {
     }, function (err, transactions) {
       if (err) console.log(err)
       	console.log(transactions)
-      	// setbalance(address,transactions.balance)
+      	setbalance(address.address,transactions.balance)
     }),10000
 	})
   }
@@ -51,7 +51,8 @@ const AddressList = ({ addresses, mnemonic, addnewaddress, setbalance }) => (
 		  	</tr>
 		  </thead>
 	  	<tbody>
-		    {addresses.map(address =>
+		    {addresses.map(address => (
+		    console.log('new',address),	
 		      <Address
 		        key={address.id}
 		        {...address}
@@ -59,6 +60,8 @@ const AddressList = ({ addresses, mnemonic, addnewaddress, setbalance }) => (
 		        	getTransactions(address, setbalance)
 		        }}
 		      />
+		      
+		    	)
 		    )}
 	    </tbody>
 	  </table>
