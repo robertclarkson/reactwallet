@@ -39,3 +39,13 @@ export const setBalance = (address, balance) => ({
   address,
   balance
 })
+
+export const setEstimatedFees = (fees) => ({
+  type: 'SET_ESTIMATED_FEES',
+  fees
+})
+
+export const setFee = (fee) => ({
+  type: 'SET_FEE',
+  fee
+})

@@ -35,9 +35,11 @@ export default class BitcoinWallet extends Component {
 
 	render() {
 		return (
-		  <div>
-			<h1>Bitcoin</h1>
-			<AddressList  />
+		  <div className="container">
+		  	<div className="col-12">
+				<h1>Bitcoin</h1>
+				<AddressList  />
+			</div>
 			<SendForm />
 		  </div>
 		);

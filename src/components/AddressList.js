@@ -25,20 +25,30 @@ const getTransactions = (address, setbalance) => {
 	dhttp({
       method: 'GET',
       url: 'https://test-insight.bitpay.com/api/addr/'+address.address,
-      // url: 'https://insight.bitpay.com/api/addr/'+address.address,
-      /*body: {
-        addrs: [address],
-        height: 0
-      }*/
     }, function (err, transactions) {
-      if (err) console.log(err)
+      if (err) console.error(err)
       	console.log(transactions)
       	setbalance(address.address,transactions.balance)
     })
-  }
+}
 
 const AddressList = ({ addresses, mnemonicText, addnewaddress, setbalance }) => (
   <div>
+  	<button className="btn btn-success" onClick={
+	  	() => {
+	  		if(!bip39.validateMnemonic(mnemonicText)) {
+	  			console.error('Not a valid mnemonic: ', mnemonicText)
+	  			return
+	  		}
+	  		// console.log(mnemonicText)
+		  	let seed = bip39.mnemonicToSeed(mnemonicText)
+	        let rootkey = bip32.fromSeed(seed)
+	        let path = "m/44'/"+(index++)+"'/0'/0/0"
+	        let address = getAddress(rootkey.derivePath(path))
+		  	addnewaddress(address, path)
+		}
+	  }> + New Address</button>
+	  <p></p>
 	  <table className="table">
 		  <thead>
 		  	<tr>
@@ -61,20 +71,7 @@ const AddressList = ({ addresses, mnemonicText, addnewaddress, setbalance }) => 
 		    )}
 	    </tbody>
 	  </table>
-	  <button onClick={
-	  	() => {
-	  		if(!bip39.validateMnemonic(mnemonicText)) {
-	  			console.error('Not a valid mnemonic: ', mnemonicText)
-	  			return
-	  		}
-	  		// console.log(mnemonicText)
-		  	let seed = bip39.mnemonicToSeed(mnemonicText)
-	        let rootkey = bip32.fromSeed(seed)
-	        let path = "m/44'/"+(index++)+"'/0'/0/0"
-	        let address = getAddress(rootkey.derivePath(path))
-		  	addnewaddress(address, path)
-		}
-	  }>New Address</button>
+	  
 	</div>
 )
 

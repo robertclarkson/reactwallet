@@ -23,7 +23,6 @@ class Settings extends Component {
 			newMnemonic: "",
 			isLoading: false
 		};
-		this.fetchData()
 		
 	}
 
@@ -74,44 +73,7 @@ class Settings extends Component {
 		this.saveMnemonicToGaia(mnemonic)
 	}
 
-	fetchData(){
-		// this.setState({isLoading:true})
-		getFile('mnemonic.json')
-		.then((file) => {
-			if(file != null) {
-				var mnemonic = JSON.parse(file || '[]')
-				if(mnemonic.words){
-					var words = mnemonic.words
-
-					var seed = bip39.mnemonicToSeed(words)
-					var rootkey = bip32.fromSeed(seed)
-					// var address = this.getAddress(rootkey.derivePath("m/44'/1'/0'/0/0"))
-					// var txs = this.getTransactions(address, this)
-					// var trans = this.getTxs(address, this)
-		    		
-		    		this.props.updateMnemonic(mnemonic)
-
-					// this.setState({
-					// 	mnemonic:mnemonic
-					// 	created_at:new Date(mnemonic.created_at).toString()
-					// })
-				}
-				else {
-					console.log('no mnemonic')
-				}
-			}
-			else {
-				console.log('no file')
-			}
-		})
-		.catch((e) => {
-			console.log('Bitcoin: Error getting bitcoin private key')
-			console.log(e);
-		})
-		.finally(() => {
-			// this.setState({isLoading:false})
-		})
-	}
+	
 
 	render() {
 		const {mnemonic} = this.props

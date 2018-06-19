@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 import Profile from './Profile.jsx';
 import Signin from './Signin.jsx';
 import {
@@ -7,7 +8,10 @@ import {
   redirectToSignIn,
   handlePendingSignIn,
   signUserOut,
+  getFile,
+  putFile,
 } from 'blockstack';
+
 import { BrowserRouter, Router, Route, NavLink, Link, Switch } from 'react-router-dom';
 import bootstrap from 'bootstrap/dist/css/bootstrap.css';
 import jquery from 'jquery';
@@ -20,11 +24,18 @@ import BitcoinWallet from './BitcoinWallet.jsx'
 import Home from './Home.jsx'
 import AddTodo from '../containers/AddTodo'
 import VisibleTodoList from '../containers/VisibleTodoList'
+import {setMnemonic} from '../actions'
 
-export default class App extends Component {
+let bitcoin = require('bitcoinjs-lib')
+var bip39 = require('bip39')
+var bip32 = require('bip32')
+const cointypes = require('bip44-constants')
+
+class App extends Component {
 
   constructor(props) {
   	super(props);
+    this.fetchData()
   }
 
   handleSignIn(e) {
@@ -35,6 +46,45 @@ export default class App extends Component {
   handleSignOut(e) {
     e.preventDefault();
     signUserOut(window.location.origin);
+  }
+
+  fetchData(){
+    // this.setState({isLoading:true})
+    getFile('mnemonic.json')
+    .then((file) => {
+      if(file != null) {
+        var mnemonic = JSON.parse(file || '[]')
+        if(mnemonic.words){
+          var words = mnemonic.words
+
+          var seed = bip39.mnemonicToSeed(words)
+          var rootkey = bip32.fromSeed(seed)
+          // var address = this.getAddress(rootkey.derivePath("m/44'/1'/0'/0/0"))
+          // var txs = this.getTransactions(address, this)
+          // var trans = this.getTxs(address, this)
+            
+            this.props.updateMnemonic(mnemonic)
+
+          // this.setState({
+          //  mnemonic:mnemonic
+          //  created_at:new Date(mnemonic.created_at).toString()
+          // })
+        }
+        else {
+          console.log('no mnemonic')
+        }
+      }
+      else {
+        console.log('no file')
+      }
+    })
+    .catch((e) => {
+      console.log('Bitcoin: Error getting bitcoin private key')
+      console.log(e);
+    })
+    .finally(() => {
+      // this.setState({isLoading:false})
+    })
   }
 
   render() {
@@ -84,3 +134,17 @@ export default class App extends Component {
     }
   }
 }
+
+const mapStateToProps = state => ({
+  mnemonic: state.mnemonic
+})
+
+const mapDispatchToProps = dispatch => ({
+  updateMnemonic: (mnemonic) => dispatch(setMnemonic(mnemonic))
+})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App)
+
