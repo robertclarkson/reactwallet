@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import FeeSelector from './FeeSelector'
-import setEstimatedFees from '../actions'
+import {setEstimatedFees} from '../actions'
 
 let bitcoin = require('bitcoinjs-lib')
 let bip39 = require('bip39')
@@ -20,8 +20,8 @@ class SendForm extends Component {
       url: 'https://bitcoinfees.earn.com/api/v1/fees/recommended',
     }, function (err, fees) {
       if (err) console.error(err)
-        console.log(fees)
-        // setFees(JSON.parse(fees))
+        console.log('API:',fees)
+        setFees(fees)
     })
   }
 
@@ -87,7 +87,7 @@ class SendForm extends Component {
                       </div>
                       <div className="col-6">
                         <label>Priority</label>
-                        <FeeSelector />
+                        <FeeSelector onChange={() => {feeinput.value(100)}} />
                       </div>
                   </div>
                 </div>
@@ -123,7 +123,7 @@ class SendForm extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  fee: state.fee,
+  fee: state.currentFee,
   addresses: state.addresses,
   mnemonic: state.mnemonic.mnemonic,
   maxsend: state.addresses.reduce(function(sum, d) {

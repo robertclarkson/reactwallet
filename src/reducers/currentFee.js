@@ -1,5 +1,5 @@
 const currentFee = (state = '', action) => {
-	// console.log('fee', action)
+	console.log('fee', action)
   switch (action.type) {
     case 'SET_FEE':
       return action.fee

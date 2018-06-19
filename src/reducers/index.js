@@ -4,7 +4,7 @@ import addresses from './addresses'
 import visibilityFilter from './visibilityFilter'
 import mnemonic from './mnemonic'
 import estimatedFees from './estimatedFees'
-import currentFee from './fee'
+import currentFee from './currentFee'
 
 export default combineReducers({
   todos,
