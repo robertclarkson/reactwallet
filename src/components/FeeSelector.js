@@ -6,15 +6,18 @@ let dhttp = require('dhttp/200')
 let index = 0
 
 
-const FeeSelector = ({setFees, feeSelected, feeEstimates}) => {
+const FeeSelector = ({onChange, setFees, feeSelected, feeEstimates}) => {
   let select
   return (
     <div>
-      <select ref={node => select = node} onChange={() => feeSelected(select.options[select.selectedIndex].value)} className="form-control">
-        <option >Select...</option>
-        <option value={feeEstimates.fastestFee}>Fastest</option>
-        <option value={feeEstimates.halfHourFee}>Half hour</option>
-        <option value={feeEstimates.hourFee}>Within an Hour</option>
+      <select ref={node => select = node} onChange={() => {
+       feeSelected(select.options[select.selectedIndex].value)
+       onChange(select.options[select.selectedIndex].value)
+     }} className="form-control">
+        <option value="0">Select...</option>
+        <option value={feeEstimates.fastestFee}>Fastest ({feeEstimates.fastestFee}sat)</option>
+        <option value={feeEstimates.halfHourFee}>Half hour ({feeEstimates.halfHourFee}sat)</option>
+        <option value={feeEstimates.hourFee}>Within an Hour ({feeEstimates.hourFee}sat)</option>
       </select>
     </div>
   )
@@ -26,7 +29,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  feeSelected: fee => dispatch(setFee(fee))
+  feeSelected: fee => dispatch(setFee((fee*0.00000001).toFixed(8)))
 })
 
 export default connect(

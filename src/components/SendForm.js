@@ -12,6 +12,16 @@ let index = 0
 
 
 class SendForm extends Component {
+
+  constructor(props) {
+    super(props);
+    console.log(props)
+    this.state = {
+      total: 0
+    };
+    this.getEstimatedFees()
+  }
+
   getEstimatedFees () {
     const {setFees} = this.props
 
@@ -25,13 +35,19 @@ class SendForm extends Component {
     })
   }
 
+  setTotal(amount, fee) {
+    console.log(amount.value, fee.value);
+    let total = parseFloat(amount.value?amount.value:0)+parseFloat(fee.value?fee.value:0)
+    this.setState({ total: total.toFixed(8) })
+  }
+
   // const SendForm = ({mnemonic,addresses,handleSend,maxsend}) => {
   render() {
-    this.getEstimatedFees()
     const {mnemonic,addresses,handleSend,maxsend,fee} = this.props
     let addressinput
     let amountinput
     let feeinput
+    let total
     let form
 
     return(
@@ -64,12 +80,14 @@ class SendForm extends Component {
                         className="form-control input-status"
                         id="amount"
                         placeholder="Amount"
+                        onChange={() => this.setTotal(amountinput,feeinput)}
                       />
                     </div>
                     <div className="col-2">
                       <button className="btn btn-default" onClick={(e) => {
                         e.preventDefault()
                         amountinput.value=maxsend
+                        this.setTotal(amountinput, feeinput)
                       }}>Max</button>
                     </div>
                   </div>
@@ -87,11 +105,20 @@ class SendForm extends Component {
                       </div>
                       <div className="col-6">
                         <label>Priority</label>
-                        <FeeSelector onChange={() => {feeinput.value(100)}} />
+                        <FeeSelector onChange={(newfee) =>this.setTotal(amountinput, newfee)}/>
                       </div>
                   </div>
                 </div>
-                
+                <div className="form-group col-12">
+                  <label>Total</label>
+                  <input ref={node => total = node} 
+                    className="form-control input-status"
+                    disabled="disabled"
+                    id="total"
+                    placeholder="Total"
+                    value={this.state.total}
+                  />
+                </div>
                 <div className="col">
                   <button
                     className="btn btn-primary"
@@ -124,6 +151,7 @@ class SendForm extends Component {
 
 const mapStateToProps = (state, ownProps) => ({
   fee: state.currentFee,
+  fees: state.estimatedFees,
   addresses: state.addresses,
   mnemonic: state.mnemonic.mnemonic,
   maxsend: state.addresses.reduce(function(sum, d) {
